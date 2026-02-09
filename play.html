@@ -106,6 +106,26 @@
   font-style:italic;
 }
 
+/* Soft glow pulse when photo appears */
+.photo-frame.glow{
+  animation: softGlow 2.8s ease-in-out 3;
+}
+
+@keyframes softGlow{
+  0%{
+    box-shadow:0 18px 45px rgba(0,0,0,0.18),
+               0 0 0 rgba(255,59,111,0);
+  }
+  50%{
+    box-shadow:0 18px 45px rgba(0,0,0,0.18),
+               0 0 28px rgba(255,59,111,0.45);
+  }
+  100%{
+    box-shadow:0 18px 45px rgba(0,0,0,0.18),
+               0 0 0 rgba(255,59,111,0);
+  }
+}
+
 @keyframes fadeUp{
   from{opacity:0;transform:translateY(12px)}
   to{opacity:1;transform:translateY(0)}
@@ -139,7 +159,7 @@
     
 <div class="photo-reveal" id="photoReveal" aria-hidden="true">
   <img src="Nik and Praj.jpg" alt="Nik and Prajna 💖">
-  <p class="photo-caption">Us — always, in every chapter 💛</p>
+  <p class="photo-caption">Our love, growing into a family of three 💙</p>
 </div>
     <!-- Date details reveal (appears after the disclaimer closes) -->
     <section class="date-details" id="dateDetails" aria-live="polite">
@@ -299,6 +319,12 @@ const photo = document.getElementById('photoReveal');
 setTimeout(()=>{
   photo.classList.add('show');
   photo.setAttribute('aria-hidden','false');
+
+  // Soft glow pulse 💖
+  const frame = photo.querySelector('.photo-frame');
+  if(frame){
+    frame.classList.add('glow');
+  }
 }, 600);
       
       setTimeout(showDisclaimer, 1100);
