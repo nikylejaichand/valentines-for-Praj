@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>For my Valentine</title>
+  <title>For Praj 💖</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root{--bg1:#ffe6f0;--accent:#ff3b6f}
@@ -12,41 +12,24 @@
     .card{max-width:720px;width:100%;background:white;border-radius:18px;padding:36px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.08)}
     h1{margin:0 0 6px;font-size:clamp(24px,4vw,40px);color:#531135}
     p{color:#6b2b47;margin:6px 0 18px}
-    .cta{display:inline-block;padding:12px 22px;border-radius:12px;background:linear-gradient(90deg,var(--accent),#ff6a9a);color:white;font-weight:700;text-decoration:none}
-    .pulse {
-  animation: pulse 1.8s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(255, 59, 111, 0.6);
-  }
-  70% {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 18px rgba(255, 59, 111, 0);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(255, 59, 111, 0);
-  }
-}
+    .cta{display:inline-block;padding:14px 26px;border-radius:14px;background:linear-gradient(90deg,var(--accent),#ff6a9a);color:white;font-weight:700;text-decoration:none;position:relative}
+    .pulse{animation:pulse 1.8s ease-in-out infinite}
+    @keyframes pulse{
+      0%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,59,111,0.6)}
+      70%{transform:scale(1.05);box-shadow:0 0 0 18px rgba(255,59,111,0)}
+      100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,59,111,0)}
+    }
     footer{margin-top:18px;color:#8a3b58;font-size:13px}
-    .small{font-size:14px;color:#7a3b58;margin-top:8px}
   </style>
 </head>
 <body>
   <main class="card" role="main" aria-labelledby="title">
-    <h1 id="title">For Prajna 💖</h1>
-    <p>There’s a tiny surprise waiting for you. Click the button below when you’re ready. ✨</p>
+    <h1 id="title">For Praj 💖</h1>
+    <p>There’s a surprise waiting for you.✨</p>
 
     <a class="cta pulse" href="play.html">Open the surprise ✨</a>
 
-    <div class="small">Or visit <code>/play.html</code> directly for the interactive version</div>
-
-    <footer>
-      <div style="margin-top:12px;color:#9b4a6d">— Love, <strong>Nikyle</strong></div>
-    </footer>
+    <footer style="margin-top:18px;">— Love, <strong>Nikyle</strong></footer>
   </main>
 </body>
 </html>
