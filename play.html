@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Prajna — Will you be my Valentine?</title>
+  <title>Will you be my Valentine?</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
     :root{
@@ -11,29 +11,35 @@
       --bg2:#fecfef;
       --accent:#ff3b6f;
       --card:#fffaf6;
+      --glass: rgba(255,255,255,0.25);
     }
     html,body{height:100%;margin:0;font-family:Nunito,system-ui,Segoe UI,Roboto,sans-serif}
     body{
-      background: radial-gradient(circle at 10% 10%, rgba(255,255,255,0.12), transparent 5%),
-                  linear-gradient(135deg,var(--bg1),var(--bg2));
+      background: radial-gradient(circle at 10% 10%, rgba(255,255,255,0.12), transparent 5%), linear-gradient(135deg,var(--bg1),var(--bg2));
       display:flex;align-items:center;justify-content:center;overflow:hidden;
     }
+
     .hearts{position:fixed;inset:0;pointer-events:none;z-index:0}
+
+    /* Hearts around the edges */
+    .border-hearts{position:fixed;inset:0;pointer-events:none;z-index:1}
+    .bh{position:absolute;opacity:0.85;filter:drop-shadow(0 6px 10px rgba(0,0,0,0.08))}
+    @keyframes bob{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-10px) rotate(6deg)}}
+
     .card{
       position:relative;z-index:5;max-width:720px;width:92%;
       background:linear-gradient(180deg,var(--card),#fff);
       border-radius:20px;padding:32px;
       box-shadow:0 20px 50px rgba(0,0,0,0.12);
-      text-align:center;border:1px solid rgba(255,255,255,0.6);
+      text-align:center;
+      border:1px solid rgba(255,255,255,0.6);
       backdrop-filter: blur(6px);
     }
     h1{font-size:clamp(28px,5vw,44px);margin:4px;color:#4b0b2f}
     p.lead{margin:8px 0 20px;color:#5a2b3f;font-size:18px}
     .heart-large{width:140px;height:140px;margin:8px auto;display:block}
 
-    /* IMPORTANT: position relative so No can move inside this row */
     .actions{display:flex;gap:12px;justify-content:center;margin-top:18px;position:relative;height:56px}
-
     button{cursor:pointer;border:0;padding:12px 20px;border-radius:12px;font-weight:700;font-size:16px}
     .yes{background:linear-gradient(90deg,var(--accent),#ff6a9a);color:white;box-shadow:0 8px 18px rgba(255,59,111,0.28)}
     .no{background:transparent;border:2px solid rgba(75,11,47,0.12);color:#4b0b2f}
@@ -41,60 +47,118 @@
     .secret{margin-top:18px;font-size:16px;color:#62193a;min-height:48px}
     .confetti{position:fixed;inset:0;pointer-events:none;z-index:10}
 
+    /* floating hearts animation */
     .h{position:absolute;transform-origin:center;opacity:0.9}
     @keyframes floatup{0%{transform:translateY(0) scale(0.8) rotate(0);}100%{transform:translateY(-110vh) scale(1) rotate(360deg);opacity:0}}
 
     footer{margin-top:18px;color:#6d2b46;font-size:14px}
+
     .credits{margin-top:14px;color:#7a3b58;font-size:13px}
+
+    /* Disclaimer modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:20;background:rgba(10,0,6,0.35);backdrop-filter: blur(6px);padding:18px}
+    .modal.show{display:flex}
+    .modal-card{max-width:560px;width:100%;background:linear-gradient(180deg,#fff, #fff6fb);border-radius:18px;padding:22px;border:1px solid rgba(255,255,255,0.75);box-shadow:0 22px 60px rgba(0,0,0,0.18);text-align:center;position:relative}
+    .stamp{position:absolute;right:16px;top:14px;background:rgba(255,59,111,0.12);border:1px dashed rgba(255,59,111,0.5);color:#8a1f46;padding:6px 10px;border-radius:999px;font-weight:900;font-size:12px;letter-spacing:0.4px;transform:rotate(8deg)}
+    .modal-card h2{margin:8px 0 10px;color:#4b0b2f}
+    .disc-text{margin:10px 0 10px;color:#5a2b3f;font-size:16px;line-height:1.35}
+    .disc-sub{margin:0 0 16px;color:#6d2b46;font-size:14px}
   </style>
 </head>
 <body>
   <div class="hearts" aria-hidden="true"></div>
+  <div class="border-hearts" aria-hidden="true"></div>
 
   <main class="card" role="main" aria-labelledby="title">
     <svg class="heart-large" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path d="M12 21s-7.5-4.7-9.6-7.6C-0.8 9.6 4.4 2.8 9.6 6.4 12 8.1 12 8.1 12 8.1s0 0 2.4-1.7C19.6 2.8 24.8 9.6 21.6 13.4 19.5 16.3 12 21 12 21z" fill="#ff5173" opacity="0.95"></path>
     </svg>
 
-    <h1 id="title">Prajna, will you be my Valentine?</h1>
+    <h1 id="title">Will you be my Valentine?</h1>
     <p class="lead">A tiny surprise just for you — click a button to reveal a message ✨</p>
 
     <div class="actions" role="group" aria-label="Answer choices">
       <button class="yes" id="btnYes">Yes, always 💖</button>
-      <button class="no" id="btnNo">No 😅</button>
+      <button class="no" id="btnNo">Hmm... maybe 😅</button>
     </div>
 
     <div class="secret" id="secretArea" aria-live="polite"></div>
-    <div class="credits">Made with love by <strong>Nikyle</strong>.</div>
-    <footer>Tip: you can personalize the message in the code.</footer>
+    <div class="credits">Made with love by <strong>Nikyle</strong>. Customize the messages below.</div>
+    <footer>
+      Tip: drop a photo into the file and change the background-image in the CSS to personalize it.
+    </footer>
   </main>
 
   <div class="confetti" id="confetti"></div>
 
+  <!-- Fun little disclaimer shown after clicking YES -->
+  <div class="modal" id="disclaimer" role="dialog" aria-modal="true" aria-labelledby="discTitle" aria-hidden="true">
+    <div class="modal-card">
+      <div class="stamp">OFFICIALLY 💍</div>
+      <h2 id="discTitle">Always Valentine Terms &amp; Conditions</h2>
+      <p class="disc-text">You accepted to be my <strong>Always Valentine</strong> when you said <strong>Yes</strong> on <strong>25 November 2023</strong> 💖</p>
+      <p class="disc-sub">By continuing, you agree to unlimited hugs, kisses, and random dance breaks.</p>
+      <button class="yes" id="discClose">Aww okay 🥰</button>
+    </div>
+  </div>
+
   <script>
-    // Floating hearts background
+    // ========= Hearts floating around the whole page =========
     const heartsContainer = document.querySelector('.hearts');
-    const heartSVG = '<svg class="h" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7.5-4.7-9.6-7.6C-0.8 9.6 4.4 2.8 9.6 6.4 12 8.1 12 8.1 12 8.1s0 0 2.4-1.7C19.6 2.8 24.8 9.6 21.6 13.4 19.5 16.3 12 21 12 21z" fill="#ff6a88"/></svg>';
-    for(let i=0;i<22;i++){
-      const wrap = document.createElement('div');
-      wrap.innerHTML = heartSVG;
-      const svg = wrap.firstElementChild;
+    const borderContainer = document.querySelector('.border-hearts');
+
+    const heartSVG = (fill) => (
+      `<svg class="h" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 21s-7.5-4.7-9.6-7.6C-0.8 9.6 4.4 2.8 9.6 6.4 12 8.1 12 8.1 12 8.1s0 0 2.4-1.7C19.6 2.8 24.8 9.6 21.6 13.4 19.5 16.3 12 21 12 21z" fill="${fill}"/>
+      </svg>`
+    );
+
+    // Continuous heart spawner (makes it feel alive)
+    function spawnHeart(){
+      const el = document.createElement('div');
+      el.innerHTML = heartSVG(['#ff6a88','#ff4466','#ff9aa2','#ff6a9a'][Math.floor(Math.random()*4)]);
+      const svg = el.firstElementChild;
       svg.style.left = (Math.random()*100) + 'vw';
       svg.style.bottom = (-10 - Math.random()*20) + 'vh';
-      svg.style.width = (14 + Math.random()*34) + 'px';
-      svg.style.animation = `floatup ${8 + Math.random()*10}s linear ${Math.random()*3}s forwards`;
-      svg.style.opacity = 0.6 + Math.random()*0.4;
+      svg.style.width = (12 + Math.random()*34) + 'px';
+      svg.style.opacity = (0.55 + Math.random()*0.4).toFixed(2);
+      svg.style.animation = `floatup ${7 + Math.random()*9}s linear 0s forwards`;
       heartsContainer.appendChild(svg);
+      setTimeout(()=>svg.remove(), 18000);
     }
 
-    // Elements
+    // Seed some hearts immediately
+    for(let i=0;i<18;i++) setTimeout(spawnHeart, i*180);
+    // Keep spawning
+    setInterval(spawnHeart, 520);
+
+    // Border hearts (little bobs around the edges)
+    const borderPositions = [
+      {left:'4%',  top:'10%'}, {left:'2%',  top:'40%'}, {left:'5%',  top:'72%'},
+      {right:'4%', top:'14%'}, {right:'2%', top:'45%'}, {right:'5%', top:'76%'},
+      {left:'22%', top:'2%'},  {left:'50%', top:'1.5%'}, {left:'78%', top:'2.2%'},
+      {left:'18%', bottom:'2%'}, {left:'50%', bottom:'1.5%'}, {left:'82%', bottom:'2.2%'}
+    ];
+
+    borderPositions.forEach((pos, i)=>{
+      const d = document.createElement('div');
+      d.className = 'bh';
+      d.innerHTML = heartSVG('rgba(255,59,111,0.55)').replace('class="h"','class=""');
+      const svg = d.querySelector('svg');
+      svg.style.width = (16 + (i%3)*6) + 'px';
+      svg.style.height = svg.style.width;
+      Object.assign(d.style, pos);
+      d.style.animation = `bob ${2.4 + (i%4)*0.5}s ease-in-out ${Math.random()}s infinite`;
+      borderContainer.appendChild(d);
+    });
+
+    // ========= Buttons + Typewriter (no glitching) =========
     const btnYes = document.getElementById('btnYes');
-    const btnNo  = document.getElementById('btnNo');
+    const btnNo = document.getElementById('btnNo');
     const secret = document.getElementById('secretArea');
 
-    // Typewriter (fixed so multiple hovers don't scramble text)
     let typingInterval = null;
-    function typeWrite(target, text, speed=40){
+    function typeWrite(target, text, speed=34){
       if (typingInterval) clearInterval(typingInterval);
       target.textContent = '';
       let i = 0;
@@ -115,8 +179,8 @@
         const s = document.createElement('div');
         s.style.position='absolute';
         s.style.left = Math.random()*100+'%';
-        s.style.top  = Math.random()*40+'%';
-        s.style.width  = (6+Math.random()*10)+'px';
+        s.style.top = Math.random()*40+'%';
+        s.style.width = (6+Math.random()*10)+'px';
         s.style.height = s.style.width;
         s.style.borderRadius='2px';
         s.style.background = ['#ff4466','#ffd166','#ff9aa2','#ff6a9a','#b39ddb'][Math.floor(Math.random()*5)];
@@ -132,16 +196,35 @@
       setTimeout(()=>area.innerHTML='',2200);
     }
 
+    // Fun disclaimer shown after YES
+    const disclaimer = document.getElementById('disclaimer');
+    const discClose = document.getElementById('discClose');
+    function showDisclaimer(){
+      disclaimer.classList.add('show');
+      disclaimer.setAttribute('aria-hidden','false');
+      discClose.focus();
+    }
+    function hideDisclaimer(){
+      disclaimer.classList.remove('show');
+      disclaimer.setAttribute('aria-hidden','true');
+    }
+    discClose.addEventListener('click', hideDisclaimer);
+    disclaimer.addEventListener('click', (e)=>{ if(e.target === disclaimer) hideDisclaimer(); });
+
     btnYes.addEventListener('click', ()=>{
       btnYes.disabled = true; btnNo.disabled = true;
       burstConfetti();
-      typeWrite(secret, "YES!!! 🥹❤️ I love you so much. Will you go on a date with me this weekend?", 28);
+      typeWrite(secret, "Yes!!! 🥹❤️ I love you more than chocolate and lazy Sundays. Will you go on a date with me this weekend?", 28);
 
       document.querySelector('.heart-large').animate(
         [{transform:'scale(1)'},{transform:'scale(1.05)'},{transform:'scale(1)'}],
         {duration:900,iterations:3}
       );
 
+      // Show the disclaimer a beat after the celebration (best moment 🎉➡️😄)
+      setTimeout(showDisclaimer, 1100);
+
+      // tiny victory sound (may be blocked until gesture; this is a gesture)
       try{
         const ctx=new (window.AudioContext||window.webkitAudioContext)();
         const o=ctx.createOscillator();const g=ctx.createGain();
@@ -154,7 +237,7 @@
       }catch(e){}
     });
 
-    // Rotating hover messages + runaway No
+    // ========= Runaway NO + rotating messages =========
     const noMessages = [
       "That's not an option 😜",
       "Maybe try the other button 😉",
@@ -163,20 +246,19 @@
       "Nope nope nope… over here! 🏃‍♂️💨",
       "Wrong choice… but nice try 😏",
       "I respectfully decline your decline 😇",
-      "Click the pink one, I dare you ✨",
       "This button is for decoration only 😌",
       "You're too cute — try the other one ❤️"
     ];
     let lastNoMsg = -1;
     function pickNoMessage(){
-      if(noMessages.length === 1) return noMessages[0];
-      let idx = Math.floor(Math.random() * noMessages.length);
+      let idx = Math.floor(Math.random()*noMessages.length);
       if(idx === lastNoMsg) idx = (idx + 1) % noMessages.length;
       lastNoMsg = idx;
       return noMessages[idx];
     }
 
     function moveNoButton(){
+      // Keep it inside the button row
       const actions = document.querySelector('.actions');
       const actionsRect = actions.getBoundingClientRect();
       const btnRect = btnNo.getBoundingClientRect();
@@ -185,8 +267,8 @@
       const maxX = Math.max(0, actionsRect.width - btnRect.width - padding);
       const maxY = Math.max(0, actionsRect.height - btnRect.height - padding);
 
-      const x = Math.random() * maxX;
-      const y = Math.random() * maxY;
+      const x = Math.random()*maxX;
+      const y = Math.random()*maxY;
 
       btnNo.style.position = 'absolute';
       btnNo.style.left = x + 'px';
@@ -204,10 +286,11 @@
       moveNoButton();
     });
 
-    // Keyboard shortcuts (Y/N)
+    // keyboard shortcuts (Y/N)
     document.addEventListener('keydown', (e)=>{
       if(e.key.toLowerCase()==='y') btnYes.click();
       if(e.key.toLowerCase()==='n') btnNo.click();
+      if(e.key === 'Escape') hideDisclaimer();
     });
 
     window.addEventListener('load', ()=>{ btnYes.focus(); });
