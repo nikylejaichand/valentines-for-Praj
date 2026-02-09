@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Will you be my Valentine?</title>
+  <title>Will you be my Valentine Babes?</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
     :root{
@@ -39,9 +39,9 @@
     p.lead{margin:8px 0 20px;color:#5a2b3f;font-size:18px}
     .heart-large{width:140px;height:140px;margin:8px auto;display:block}
 
-    .actions{display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:18px; position:relative; height:70px;}
-.lane{position:relative; display:flex; align-items:center; justify-content:center;}
-.no-lane{  overflow:visible;}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;justify-content:center;margin-top:18px;position:relative;height:72px}
+    .lane{position:relative;display:flex;align-items:center;justify-content:center}
+    .no-lane{overflow:visible}
     button{cursor:pointer;border:0;padding:12px 20px;border-radius:12px;font-weight:700;font-size:16px}
     .yes{background:linear-gradient(90deg,var(--accent),#ff6a9a);color:white;box-shadow:0 8px 18px rgba(255,59,111,0.28)}
     .no{background:transparent;border:2px solid rgba(75,11,47,0.12);color:#4b0b2f}
@@ -65,6 +65,16 @@
     .modal-card h2{margin:8px 0 10px;color:#4b0b2f}
     .disc-text{margin:10px 0 10px;color:#5a2b3f;font-size:16px;line-height:1.35}
     .disc-sub{margin:0 0 16px;color:#6d2b46;font-size:14px}
+
+    /* Date details reveal */
+    .date-details{display:none;margin-top:18px;background:rgba(255,255,255,0.65);border:1px solid rgba(255,255,255,0.8);border-radius:16px;padding:18px;text-align:left;box-shadow:0 16px 40px rgba(0,0,0,0.08)}
+    .date-details.show{display:block;animation:pop 520ms cubic-bezier(.2,.8,.2,1)}
+    .date-details h3{margin:0 0 8px;color:#4b0b2f}
+    .date-details p{margin:8px 0;color:#5a2b3f}
+    .date-details ul{margin:10px 0 10px 18px;color:#5a2b3f}
+    .date-details li{margin:6px 0}
+    .date-details .tiny{margin-top:10px;color:#6d2b46;font-size:13px}
+    @keyframes pop{from{transform:scale(0.98);opacity:0}to{transform:scale(1);opacity:1}}
   </style>
 </head>
 <body>
@@ -80,19 +90,33 @@
     <p class="lead">A tiny surprise just for you — click a button to reveal a message ✨</p>
 
     <div class="actions" role="group" aria-label="Answer choices">
-  <div class="lane yes-lane">
-    <button class="yes" id="btnYes">Yes, always 💖</button>
-  </div>
-  <div class="lane no-lane">
-    <button class="no" id="btnNo">No 😅</button>
-  </div>
-</div>
+      <div class="lane yes-lane">
+        <button class="yes" id="btnYes">Yes, always 💖</button>
+      </div>
+      <div class="lane no-lane">
+        <button class="no" id="btnNo">No 😂</button>
+      </div>
+    </div>
 
     <div class="secret" id="secretArea" aria-live="polite"></div>
     <div class="credits">Made with love by <strong>Nikyle</strong>. Customize the messages below.</div>
     <footer>
       Tip: drop a photo into the file and change the background-image in the CSS to personalize it.
     </footer>
+  
+
+    <!-- Date details reveal (appears after the disclaimer closes) -->
+    <section class="date-details" id="dateDetails" aria-live="polite">
+      <h3>✨ Date Details ✨</h3>
+      <p>Okay my Always Valentine… here’s the plan:</p>
+      <ul>
+        <li><strong>When:</strong> This weekend (you pick the day 😘)</li>
+        <li><strong>Dress code:</strong> Cute + comfy</li>
+        <li><strong>Agenda:</strong> Dinner • dessert • a little walk • lots of laughs</li>
+        <li><strong>Your job:</strong> Say “Yes” again (just to be safe)</li>
+      </ul>
+      <p class="tiny">P.S. You can negotiate any part of these terms with kisses.</p>
+    </section>
   </main>
 
   <div class="confetti" id="confetti"></div>
@@ -103,8 +127,8 @@
       <div class="stamp">OFFICIALLY 💍</div>
       <h2 id="discTitle">Always Valentine Terms &amp; Conditions</h2>
       <p class="disc-text">You accepted to be my <strong>Always Valentine</strong> when you said <strong>Yes</strong> on <strong>25 November 2023</strong> 💖</p>
-      <p class="disc-sub">By continuing, you agree to unlimited hugs, kisses and a new Bundle of Joy on the way!</p>
-      <button class="yes" id="discClose">Aww Yeahhh 🥰</button>
+      <p class="disc-sub">By continuing, you agree to unlimited hugs, kisses, and random dance breaks.</p>
+      <button class="yes" id="discClose">Aww okay 🥰</button>
     </div>
   </div>
 
@@ -213,9 +237,24 @@
     function hideDisclaimer(){
       disclaimer.classList.remove('show');
       disclaimer.setAttribute('aria-hidden','true');
+      // Reveal date details after the cute disclaimer closes
+      revealDateDetails();
     }
     discClose.addEventListener('click', hideDisclaimer);
     disclaimer.addEventListener('click', (e)=>{ if(e.target === disclaimer) hideDisclaimer(); });
+
+    // Growth/shrink counters
+    let noDodges = 0;
+
+    function updateYesNoSizes(){
+      // Yes grows subtly with each dodge (cap at +18%)
+      const yesScale = Math.min(1.18, 1 + noDodges * 0.02);
+      btnYes.style.transform = `scale(${yesScale})`;
+
+      // No shrinks slightly with each dodge (floor at 70%)
+      const noScale = Math.max(0.70, 1 - noDodges * 0.03);
+      btnNo.style.transform = `scale(${noScale})`;
+    }
 
     btnYes.addEventListener('click', ()=>{
       btnYes.disabled = true; btnNo.disabled = true;
@@ -243,6 +282,15 @@
       }catch(e){}
     });
 
+    // ========= Date details reveal (after disclaimer) =========
+    const dateDetails = document.getElementById('dateDetails');
+    function revealDateDetails(){
+      if(!dateDetails) return;
+      dateDetails.classList.add('show');
+      // Bring it into view nicely
+      dateDetails.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }
+
     // ========= Runaway NO + rotating messages =========
     const noMessages = [
       "That's not an option 😜",
@@ -263,22 +311,27 @@
       return noMessages[idx];
     }
 
-   function moveNoButton(){
-  const lane = document.querySelector('.no-lane');
-  const laneRect = lane.getBoundingClientRect();
-  const btnRect = btnNo.getBoundingClientRect();
+    function moveNoButton(){
+      // Keep it inside the NO lane so it never overlaps YES
+      const lane = document.querySelector('.no-lane');
+      const laneRect = lane.getBoundingClientRect();
+      const btnRect = btnNo.getBoundingClientRect();
 
-  const padding = 6;
-  const maxX = Math.max(0, laneRect.width - btnRect.width - padding);
-  const maxY = Math.max(0, laneRect.height - btnRect.height - padding);
+      const padding = 6;
+      const maxX = Math.max(0, laneRect.width - btnRect.width - padding);
+      const maxY = Math.max(0, laneRect.height - btnRect.height - padding);
 
-  const x = Math.random() * maxX;
-  const y = Math.random() * maxY;
+      const x = Math.random()*maxX;
+      const y = Math.random()*maxY;
 
-  btnNo.style.position = 'absolute';
-  btnNo.style.left = x + 'px';
-  btnNo.style.top  = y + 'px';
-}
+      btnNo.style.position = 'absolute';
+      btnNo.style.left = x + 'px';
+      btnNo.style.top  = y + 'px';
+
+      // Each dodge: YES grows, NO shrinks
+      noDodges += 1;
+      updateYesNoSizes();
+    }
 
     btnNo.addEventListener('mouseenter', ()=>{
       typeWrite(secret, pickNoMessage(), 28);
