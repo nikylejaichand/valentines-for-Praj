@@ -39,7 +39,9 @@
     p.lead{margin:8px 0 20px;color:#5a2b3f;font-size:18px}
     .heart-large{width:140px;height:140px;margin:8px auto;display:block}
 
-    .actions{display:flex;gap:12px;justify-content:center;margin-top:18px;position:relative;height:56px}
+    .actions{display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:18px; position:relative; height:70px;}
+.lane{position:relative; display:flex; align-items:center; justify-content:center;}
+.no-lane{  overflow:visible;}
     button{cursor:pointer;border:0;padding:12px 20px;border-radius:12px;font-weight:700;font-size:16px}
     .yes{background:linear-gradient(90deg,var(--accent),#ff6a9a);color:white;box-shadow:0 8px 18px rgba(255,59,111,0.28)}
     .no{background:transparent;border:2px solid rgba(75,11,47,0.12);color:#4b0b2f}
@@ -261,23 +263,22 @@
       return noMessages[idx];
     }
 
-    function moveNoButton(){
-      // Keep it inside the button row
-      const actions = document.querySelector('.actions');
-      const actionsRect = actions.getBoundingClientRect();
-      const btnRect = btnNo.getBoundingClientRect();
+   function moveNoButton(){
+  const lane = document.querySelector('.no-lane');
+  const laneRect = lane.getBoundingClientRect();
+  const btnRect = btnNo.getBoundingClientRect();
 
-      const padding = 8;
-      const maxX = Math.max(0, actionsRect.width - btnRect.width - padding);
-      const maxY = Math.max(0, actionsRect.height - btnRect.height - padding);
+  const padding = 6;
+  const maxX = Math.max(0, laneRect.width - btnRect.width - padding);
+  const maxY = Math.max(0, laneRect.height - btnRect.height - padding);
 
-      const x = Math.random()*maxX;
-      const y = Math.random()*maxY;
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
 
-      btnNo.style.position = 'absolute';
-      btnNo.style.left = x + 'px';
-      btnNo.style.top  = y + 'px';
-    }
+  btnNo.style.position = 'absolute';
+  btnNo.style.left = x + 'px';
+  btnNo.style.top  = y + 'px';
+}
 
     btnNo.addEventListener('mouseenter', ()=>{
       typeWrite(secret, pickNoMessage(), 28);
