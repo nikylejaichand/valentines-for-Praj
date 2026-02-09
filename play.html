@@ -3,29 +3,49 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Will you be my Valentine?</title>
+  <title>Prajna — Will you be my Valentine?</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
-    :root{--bg1:#ff9a9e;--bg2:#fecfef;--accent:#ff3b6f;--card:#fffaf6}
+    :root{
+      --bg1:#ff9a9e;
+      --bg2:#fecfef;
+      --accent:#ff3b6f;
+      --card:#fffaf6;
+    }
     html,body{height:100%;margin:0;font-family:Nunito,system-ui,Segoe UI,Roboto,sans-serif}
-    body{background: radial-gradient(circle at 10% 10%, rgba(255,255,255,0.12), transparent 5%), linear-gradient(135deg,var(--bg1),var(--bg2));display:flex;align-items:center;justify-content:center;overflow:hidden}
+    body{
+      background: radial-gradient(circle at 10% 10%, rgba(255,255,255,0.12), transparent 5%),
+                  linear-gradient(135deg,var(--bg1),var(--bg2));
+      display:flex;align-items:center;justify-content:center;overflow:hidden;
+    }
     .hearts{position:fixed;inset:0;pointer-events:none;z-index:0}
-    .card{position:relative;z-index:5;max-width:720px;width:92%;background:linear-gradient(180deg,var(--card),#fff);border-radius:20px;padding:32px;box-shadow:0 20px 50px rgba(0,0,0,0.12);text-align:center;border:1px solid rgba(255,255,255,0.6);backdrop-filter: blur(6px)}
+    .card{
+      position:relative;z-index:5;max-width:720px;width:92%;
+      background:linear-gradient(180deg,var(--card),#fff);
+      border-radius:20px;padding:32px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.12);
+      text-align:center;border:1px solid rgba(255,255,255,0.6);
+      backdrop-filter: blur(6px);
+    }
     h1{font-size:clamp(28px,5vw,44px);margin:4px;color:#4b0b2f}
     p.lead{margin:8px 0 20px;color:#5a2b3f;font-size:18px}
     .heart-large{width:140px;height:140px;margin:8px auto;display:block}
-    .actions{display:flex;gap:12px;justify-content:center;margin-top:18px;position:relative;height:54px}
+
+    /* IMPORTANT: position relative so No can move inside this row */
+    .actions{display:flex;gap:12px;justify-content:center;margin-top:18px;position:relative;height:56px}
+
     button{cursor:pointer;border:0;padding:12px 20px;border-radius:12px;font-weight:700;font-size:16px}
     .yes{background:linear-gradient(90deg,var(--accent),#ff6a9a);color:white;box-shadow:0 8px 18px rgba(255,59,111,0.28)}
     .no{background:transparent;border:2px solid rgba(75,11,47,0.12);color:#4b0b2f}
+
     .secret{margin-top:18px;font-size:16px;color:#62193a;min-height:48px}
     .confetti{position:fixed;inset:0;pointer-events:none;z-index:10}
-    .h{position:absolute;width:28px;height:28px;transform-origin:center;opacity:0.9}
+
+    .h{position:absolute;transform-origin:center;opacity:0.9}
     @keyframes floatup{0%{transform:translateY(0) scale(0.8) rotate(0);}100%{transform:translateY(-110vh) scale(1) rotate(360deg);opacity:0}}
-    .shake{animation:shake 620ms cubic-bezier(.36,.07,.19,.97) both}
-    @keyframes shake{10%,90%{transform:translateX(-1px)}20%,80%{transform:translateX(2px)}30%,50%,70%{transform:translateX(-4px)}40%,60%{transform:translateX(4px)}}
+
+    footer{margin-top:18px;color:#6d2b46;font-size:14px}
     .credits{margin-top:14px;color:#7a3b58;font-size:13px}
-    .backlink{display:block;margin-top:12px;color:#7a3b58;text-decoration:none}
   </style>
 </head>
 <body>
@@ -36,109 +56,160 @@
       <path d="M12 21s-7.5-4.7-9.6-7.6C-0.8 9.6 4.4 2.8 9.6 6.4 12 8.1 12 8.1 12 8.1s0 0 2.4-1.7C19.6 2.8 24.8 9.6 21.6 13.4 19.5 16.3 12 21 12 21z" fill="#ff5173" opacity="0.95"></path>
     </svg>
 
-    <h1 id="title">Will you be my Valentine?</h1>
+    <h1 id="title">Prajna, will you be my Valentine?</h1>
     <p class="lead">A tiny surprise just for you — click a button to reveal a message ✨</p>
 
     <div class="actions" role="group" aria-label="Answer choices">
       <button class="yes" id="btnYes">Yes, always 💖</button>
-      <button class="no" id="btnNo">Hmm... maybe 😅</button>
+      <button class="no" id="btnNo">No 😅</button>
     </div>
 
     <div class="secret" id="secretArea" aria-live="polite"></div>
-    <div class="credits">Made with love by <strong>Nikyle</strong>. Customize the messages below.</div>
-
-    <a class="backlink" href="index.html">← Back to the card</a>
+    <div class="credits">Made with love by <strong>Nikyle</strong>.</div>
+    <footer>Tip: you can personalize the message in the code.</footer>
   </main>
 
   <div class="confetti" id="confetti"></div>
 
   <script>
-    // hearts
+    // Floating hearts background
     const heartsContainer = document.querySelector('.hearts');
     const heartSVG = '<svg class="h" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7.5-4.7-9.6-7.6C-0.8 9.6 4.4 2.8 9.6 6.4 12 8.1 12 8.1 12 8.1s0 0 2.4-1.7C19.6 2.8 24.8 9.6 21.6 13.4 19.5 16.3 12 21 12 21z" fill="#ff6a88"/></svg>';
-    for(let i=0;i<18;i++){
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = heartSVG;
-      const svg = wrapper.firstElementChild;
+    for(let i=0;i<22;i++){
+      const wrap = document.createElement('div');
+      wrap.innerHTML = heartSVG;
+      const svg = wrap.firstElementChild;
       svg.style.left = (Math.random()*100) + 'vw';
       svg.style.bottom = (-10 - Math.random()*20) + 'vh';
-      svg.style.width = (12 + Math.random()*36) + 'px';
+      svg.style.width = (14 + Math.random()*34) + 'px';
       svg.style.animation = `floatup ${8 + Math.random()*10}s linear ${Math.random()*3}s forwards`;
       svg.style.opacity = 0.6 + Math.random()*0.4;
       heartsContainer.appendChild(svg);
     }
 
-    // elements
+    // Elements
     const btnYes = document.getElementById('btnYes');
     const btnNo  = document.getElementById('btnNo');
     const secret = document.getElementById('secretArea');
-    const confettiArea = document.getElementById('confetti');
 
-    // typewriter
+    // Typewriter (fixed so multiple hovers don't scramble text)
+    let typingInterval = null;
     function typeWrite(target, text, speed=40){
+      if (typingInterval) clearInterval(typingInterval);
       target.textContent = '';
-      let i=0;
-      const iv = setInterval(()=>{ if(i<text.length){ target.textContent += text[i++]; } else clearInterval(iv); }, speed);
+      let i = 0;
+      typingInterval = setInterval(()=>{
+        if(i < text.length){
+          target.textContent += text[i++];
+        } else {
+          clearInterval(typingInterval);
+          typingInterval = null;
+        }
+      }, speed);
     }
 
-    // confetti
     function burstConfetti(){
-      confettiArea.innerHTML = '';
-      for(let i=0;i<70;i++){
+      const area = document.getElementById('confetti');
+      area.innerHTML = '';
+      for(let i=0;i<80;i++){
         const s = document.createElement('div');
         s.style.position='absolute';
         s.style.left = Math.random()*100+'%';
-        s.style.top = Math.random()*40+'%';
-        s.style.width = (6+Math.random()*10)+'px';
+        s.style.top  = Math.random()*40+'%';
+        s.style.width  = (6+Math.random()*10)+'px';
         s.style.height = s.style.width;
         s.style.borderRadius='2px';
         s.style.background = ['#ff4466','#ffd166','#ff9aa2','#ff6a9a','#b39ddb'][Math.floor(Math.random()*5)];
-        confettiArea.appendChild(s);
-        (function(el){
-          requestAnimationFrame(()=>{ el.animate([{transform:'translateY(0) rotate(0deg)', opacity:1},{transform:`translateY(${150+Math.random()*300}px) rotate(${Math.random()*720}deg)`, opacity:0}],{duration:1200+Math.random()*900, easing:'cubic-bezier(.2,.8,.2,1)'}); });
-        })(s);
+        area.appendChild(s);
+        requestAnimationFrame(()=>{
+          s.animate(
+            [{transform:'translateY(0) rotate(0deg)', opacity:1},
+             {transform:`translateY(${150+Math.random()*300}px) rotate(${Math.random()*720}deg)`, opacity:0}],
+            {duration:1200+Math.random()*900, easing:'cubic-bezier(.2,.8,.2,1)'}
+          );
+        });
       }
-      setTimeout(()=>confettiArea.innerHTML='',2200);
+      setTimeout(()=>area.innerHTML='',2200);
     }
 
-    // Yes
     btnYes.addEventListener('click', ()=>{
       btnYes.disabled = true; btnNo.disabled = true;
       burstConfetti();
-      typeWrite(secret, "Yes!!! I love you more than chocolate and lazy Sundays. Will you go on a date with me this weekend? ❤️", 28);
-      document.querySelector('.heart-large').animate([{transform:'scale(1)'},{transform:'scale(1.05)'},{transform:'scale(1)'}],{duration:900,iterations:3});
-      try{const ctx=new (window.AudioContext||window.webkitAudioContext)();const o=ctx.createOscillator();const g=ctx.createGain();o.type='sine';o.frequency.value=660;g.gain.value=0.0001;o.connect(g);g.connect(ctx.destination);o.start();g.gain.exponentialRampToValueAtTime(0.15,ctx.currentTime+0.02);g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+0.6);o.stop(ctx.currentTime+0.65);}catch(e){}
+      typeWrite(secret, "YES!!! 🥹❤️ I love you so much. Will you go on a date with me this weekend?", 28);
+
+      document.querySelector('.heart-large').animate(
+        [{transform:'scale(1)'},{transform:'scale(1.05)'},{transform:'scale(1)'}],
+        {duration:900,iterations:3}
+      );
+
+      try{
+        const ctx=new (window.AudioContext||window.webkitAudioContext)();
+        const o=ctx.createOscillator();const g=ctx.createGain();
+        o.type='sine';o.frequency.value=660;g.gain.value=0.0001;
+        o.connect(g);g.connect(ctx.destination);
+        o.start();
+        g.gain.exponentialRampToValueAtTime(0.15,ctx.currentTime+0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+0.6);
+        o.stop(ctx.currentTime+0.65);
+      }catch(e){}
     });
 
-    // No button runs away inside .actions
+    // Rotating hover messages + runaway No
+    const noMessages = [
+      "That's not an option 😜",
+      "Maybe try the other button 😉",
+      "You might like the other option 💖",
+      "How dare you think of clicking this 😤😂",
+      "Nope nope nope… over here! 🏃‍♂️💨",
+      "Wrong choice… but nice try 😏",
+      "I respectfully decline your decline 😇",
+      "Click the pink one, I dare you ✨",
+      "This button is for decoration only 😌",
+      "You're too cute — try the other one ❤️"
+    ];
+    let lastNoMsg = -1;
+    function pickNoMessage(){
+      if(noMessages.length === 1) return noMessages[0];
+      let idx = Math.floor(Math.random() * noMessages.length);
+      if(idx === lastNoMsg) idx = (idx + 1) % noMessages.length;
+      lastNoMsg = idx;
+      return noMessages[idx];
+    }
+
     function moveNoButton(){
       const actions = document.querySelector('.actions');
       const actionsRect = actions.getBoundingClientRect();
       const btnRect = btnNo.getBoundingClientRect();
+
       const padding = 8;
       const maxX = Math.max(0, actionsRect.width - btnRect.width - padding);
       const maxY = Math.max(0, actionsRect.height - btnRect.height - padding);
+
       const x = Math.random() * maxX;
       const y = Math.random() * maxY;
+
       btnNo.style.position = 'absolute';
       btnNo.style.left = x + 'px';
-      btnNo.style.top = y + 'px';
+      btnNo.style.top  = y + 'px';
     }
 
     btnNo.addEventListener('mouseenter', ()=>{
-      typeWrite(secret, "Hey! That's not an option 😜", 28);
-      moveNoButton();
-    });
-    btnNo.addEventListener('click', (e)=>{
-      e.preventDefault();
-      typeWrite(secret, "Nice try 😏", 28);
+      typeWrite(secret, pickNoMessage(), 28);
       moveNoButton();
     });
 
+    btnNo.addEventListener('click', (e)=>{
+      e.preventDefault();
+      typeWrite(secret, pickNoMessage(), 28);
+      moveNoButton();
+    });
+
+    // Keyboard shortcuts (Y/N)
     document.addEventListener('keydown', (e)=>{
       if(e.key.toLowerCase()==='y') btnYes.click();
       if(e.key.toLowerCase()==='n') btnNo.click();
     });
+
     window.addEventListener('load', ()=>{ btnYes.focus(); });
   </script>
 </body>
